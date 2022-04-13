@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <list>
+#include<iterator>
 using namespace std;
 
 class Graph {
@@ -12,14 +13,15 @@ class Graph {
    public:
   Graph(int V);
   void addEdge(int src, int dest);
-  void DFS(int vertex);
   void clearVisited();
+  void DFS(int vertex);
+  void DFS_ALL();
 };
 
 // Initialize graph
 Graph::Graph(int vertices) {
   numVertices = vertices;
-  adjLists = new list<int>[vertices];
+  adjLists = new list<int>[vertices+1];
   visited = new bool[vertices];
 }
 
@@ -33,7 +35,7 @@ void Graph::clearVisited(){
 // Add edges
 void Graph::addEdge(int src, int dest) {
   adjLists[src].push_front(dest);
-  adjLists[dest].push_back(src);
+  adjLists[dest].push_front(src);
 }
 
 // DFS algorithm
@@ -53,6 +55,27 @@ void Graph::DFS(int vertex) {
   }
 }
 
+void Graph::DFS_ALL() {
+    for(unsigned j = 1; j <= numVertices;j++){
+        if(visited[j] == false)
+            cout << j << " ";
+        visited[j] = true;
+        list<int> adjList = adjLists[j];
+        //cout << *adjList.begin() << " ";
+        if(*adjList.begin() == 0){
+            cout << "\n";
+        }
+        list<int>::iterator i;
+        for (i = adjList.begin(); i != adjList.end(); ++i){
+            if (!visited[*i]){
+                DFS(*i);
+                cout << "\n";
+            }
+        }
+    }
+
+}
+
 int main() {
 
   Graph g(10);
@@ -62,8 +85,7 @@ int main() {
   g.addEdge(5, 7);
   g.addEdge(6, 9);
   g.addEdge(8, 10);
-  g.DFS(9);
-
+  g.DFS_ALL();
 
 
   return 0;
